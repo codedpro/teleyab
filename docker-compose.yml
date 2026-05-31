@@ -1,0 +1,79 @@
+# TeleYab full stack.
+#
+#   docker compose up -d --build
+#
+# Services:
+#   - postgres : PostgreSQL 16. Reachable on host 127.0.0.1:5436 for psql/backup.
+#                Internally as `postgres:5432`.
+#   - api      : Go backend. Internal only; reverse-proxied by web via GO_ORIGIN.
+#   - web      : Next.js standalone server, published on host :4102.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: teleyab-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: teleyab
+      POSTGRES_PASSWORD: teleyab
+      POSTGRES_DB: teleyab
+    volumes:
+      - teleyab_pg:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5436:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U teleyab -d teleyab"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [internal]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: teleyab-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      # Override to point at the in-network postgres, not host.
+      DATABASE_URL: postgres://teleyab:teleyab@postgres:5432/teleyab?sslmode=disable
+      PORT: 8084
+      UPLOAD_DIR: /data/uploads
+    volumes:
+      - teleyab_uploads:/data/uploads
+    # No `ports:` — internal only. Web reaches it via http://api:8084.
+    networks: [internal]
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        GO_ORIGIN: http://api:8084
+    container_name: teleyab-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+      PORT: 4102
+      HOSTNAME: 0.0.0.0
+      # Used by server-side fetches inside Next (rewrites cover client requests).
+      GO_ORIGIN: http://api:8084
+    ports:
+      - "4102:4102"
+    networks: [internal]
+
+volumes:
+  teleyab_pg:
+    name: teleyab_pg
+  teleyab_uploads:
+    name: teleyab_uploads
+
+networks:
+  internal:
+    name: teleyab_internal

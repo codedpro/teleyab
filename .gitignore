@@ -1,0 +1,65 @@
+# ─── Node / Next.js (web/) ──────────────────────────────────
+node_modules
+.next
+out
+.next-build
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel + Turbopack caches
+.vercel
+.turbo
+
+# ─── Go (cmd/, internal/) ───────────────────────────────────
+bin
+*.test
+*.out
+*.exe
+coverage.out
+go.work
+go.work.sum
+
+# ─── Secrets / runtime ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.local
+
+# ─── Postgres / docker volumes ──────────────────────────────
+pgdata
+postgres-data
+docker-data
+*.sql.dump
+*.sql.bak
+
+# ─── Editor / OS noise ──────────────────────────────────────
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ─── Logs ───────────────────────────────────────────────────
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── SEO audit working files (kept out of source control) ───
+FULL-AUDIT-REPORT.md
+ACTION-PLAN.md
+screenshots/
+
+# ─── Misc ───────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+.cache
+tmp/
+
+# Agent-only operator notes
+CLAUDE.md

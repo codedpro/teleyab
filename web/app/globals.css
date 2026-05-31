@@ -1,0 +1,505 @@
+@import "tailwindcss";
+
+/* Vazirmatn (fa-IR) + Inter (Latin sans) loaded via <link> in app/layout.tsx.
+   No serif italic — this is a clean, light, Telegram-flavored product UI,
+   not an editorial spread. */
+
+@theme {
+    /* breakpoints */
+    --breakpoint-xs: 26rem;
+
+    /* typography */
+    --font-sans:    "Vazirmatn", "Inter", system-ui, sans-serif;
+    --font-display: "Vazirmatn", "Inter", system-ui, sans-serif;
+    --font-mono:    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    /* ───────────── light Telegram palette ─────────────
+       Variable names are kept stable so existing class
+       names (text-bone, text-persimmon, bg-night-900, ...)
+       in older pages continue to map to the right hue. */
+
+    /* surfaces */
+    --color-night-950: #f4f6fa;     /* deepest "page" tint — used for hover backdrops */
+    --color-night-900: #ffffff;     /* page bg — Telegram-web-style soft white */
+    --color-night-800: #ffffff;     /* lifted card */
+    --color-night-700: #f4f6fa;
+    --color-night-600: #e1e7ef;     /* hairline · used as `border-night-600` */
+    --color-night-500: #ecf0f4;
+
+    /* on-light text */
+    --color-bone:        #0f1419;   /* primary ink */
+    --color-bone-soft:   #3b4754;
+    --color-bone-dim:    #707a85;
+    --color-whisper:     #a3acb6;
+
+    /* paper (auth/inverted) — keep cream for variety, but readable */
+    --color-paper:       #ffffff;
+    --color-paper-deep:  #f4f6fa;
+    --color-paper-rule:  #e1e7ef;
+    --color-ink:         #0f1419;
+    --color-ink-soft:    #3b4754;
+
+    /* accent — Telegram blue (the iconic 2AABEE / 229ED9 family).
+       `persimmon` retained as the variable name so ~50 existing
+       `text-persimmon` / `border-persimmon` references inherit the
+       new accent without touching every page. */
+    --color-persimmon:      #229ED9;   /* primary  — Telegram blue */
+    --color-persimmon-deep: #1a8cd8;   /* hover    — slightly darker */
+    --color-persimmon-soft: #e7f3fa;   /* tint     — for chips/hover backdrops */
+
+    --color-saffron:    #f6a609;
+    --color-teal:       #229ED9;
+    --color-teal-soft:  #6dc2ed;
+
+    /* status */
+    --color-jade:  #31a24c;
+    --color-rose:  #e0245e;
+    --color-amber: #f6a609;
+
+    /* chat paper (Telegram-style wallpaper tint behind bubbles) */
+    --color-tg-paper:     #e7f3fa;
+    --color-tg-paper-2:   #d8ebf6;
+}
+
+/* ─────────── base ─────────── */
+html {
+    color-scheme: light;
+    font-feature-settings: "ss02", "kern";
+}
+
+body {
+    background: var(--color-night-900);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Soft Telegram-blue corner glow — extremely subtle, anchors the page
+   without taking over (no more nighttime aurora pools). */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(900px 600px at 100% -10%, rgba(34, 158, 217, 0.06), transparent 60%),
+        radial-gradient(700px 500px at 0% 110%, rgba(34, 158, 217, 0.04), transparent 60%);
+}
+
+/* ensure huge headings can wrap on tiny viewports */
+.display-fa, .display-en, .numeral {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+::selection {
+    background: var(--color-persimmon);
+    color: white;
+}
+
+/* slim light scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-night-700); }
+::-webkit-scrollbar-thumb {
+    background: #cbd2db;
+    border-radius: 9999px;
+    border: 2px solid var(--color-night-700);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-persimmon); }
+
+/* direction helpers */
+.ltr { direction: ltr; text-align: left; unicode-bidi: isolate; }
+.rtl { direction: rtl; text-align: right; unicode-bidi: isolate; }
+[dir="auto"]:dir(ltr),
+input[dir="auto"]:where([type="text"], [type="email"], [type="password"], [type="search"], [type="url"], [type="tel"]):dir(ltr),
+textarea[dir="auto"]:dir(ltr) { text-align: left; }
+[dir="auto"]:dir(rtl),
+input[dir="auto"]:where([type="text"], [type="email"], [type="password"], [type="search"], [type="url"], [type="tel"]):dir(rtl),
+textarea[dir="auto"]:dir(rtl) { text-align: right; }
+
+.font-mono { unicode-bidi: isolate; }
+
+/* ─────────── type primitives ─────────── */
+
+/* Restrained mono label — used for column headers and small labels.
+   Keep the lowercase / mono character but lighter color than before
+   so it reads as a quiet caption, not editorial chrome. */
+.tracker {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.10em;
+    text-transform: lowercase;
+    color: var(--color-bone-dim);
+    direction: ltr;
+}
+.tracker-lg {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: var(--color-bone-dim);
+    direction: ltr;
+}
+
+/* RTL display heading — clean modern weight, not the heavy editorial 900. */
+.display-fa {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+}
+
+/* Latin "display" — same sans, no serif italic. Just a slightly bolder Inter. */
+.display-en {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+}
+
+/* Numerical display */
+.numeral {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-feature-settings: "tnum", "ss02";
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+}
+
+/* ─────────── chrome ─────────── */
+.rule        { border-color: #e1e7ef; }
+.rule-soft   { border-color: #ecf0f4; }
+.rule-strong { border-color: #cbd5e1; }
+
+/* shared rounded card primitive — replaces the hairline-only editorial card */
+.t-card {
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(15, 20, 25, 0.04);
+}
+.t-card-pad    { padding: 1.5rem; }
+.t-card-pad-lg { padding: 2rem; }
+
+/* primary CTA button (Telegram blue, rounded pill) */
+.t-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.625rem;
+    padding: 0 1.25rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.06s, box-shadow 0.15s;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+}
+.t-btn:active   { transform: translateY(1px); }
+.t-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.t-btn-primary {
+    background: var(--color-persimmon);
+    color: #ffffff;
+    border: 1px solid transparent;
+    box-shadow: 0 6px 18px -10px rgba(34, 158, 217, 0.55);
+}
+.t-btn-primary:hover:not(:disabled) {
+    background: var(--color-persimmon-deep);
+    box-shadow: 0 10px 22px -10px rgba(34, 158, 217, 0.85);
+}
+.t-btn-ghost {
+    background: transparent;
+    color: var(--color-bone);
+    border: 1px solid #e1e7ef;
+}
+.t-btn-ghost:hover:not(:disabled) {
+    background: var(--color-persimmon-soft);
+    border-color: var(--color-persimmon);
+    color: var(--color-persimmon-deep);
+}
+.t-btn-danger {
+    background: #fee2e2;
+    color: var(--color-rose);
+    border: 1px solid #fecaca;
+}
+.t-btn-danger:hover:not(:disabled) {
+    background: #fecaca;
+}
+.t-btn-success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+.t-btn-lg { height: 3.125rem; padding: 0 1.75rem; font-size: 1rem; }
+.t-btn-sm { height: 2.125rem; padding: 0 0.875rem; font-size: 0.8rem; }
+
+/* clean rounded input */
+.t-input {
+    width: 100%;
+    height: 2.875rem;
+    padding: 0 1rem;
+    background: #ffffff;
+    border: 1px solid #e1e7ef;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: var(--color-bone);
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.t-input:focus {
+    outline: none;
+    border-color: var(--color-persimmon);
+    box-shadow: 0 0 0 4px var(--color-persimmon-soft);
+}
+.t-input::placeholder { color: var(--color-whisper); }
+.t-input-lg { height: 3.5rem; font-size: 1.05rem; }
+
+/* legacy editorial focus state — keep working on paper inputs */
+.focus-rule:focus {
+    outline: none;
+    border-color: var(--color-persimmon);
+    background: var(--color-persimmon-soft);
+}
+
+/* legacy paper card (auth) — kept light + bordered for the new theme */
+.surface-paper {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border: 1px solid var(--color-paper-rule);
+    border-radius: 16px;
+    box-shadow: 0 30px 60px -30px rgba(15, 20, 25, 0.10);
+}
+
+/* chips */
+.t-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    border: 1px solid transparent;
+}
+.t-chip-brand   { background: var(--color-persimmon-soft); color: var(--color-persimmon-deep); border-color: rgba(34, 158, 217, 0.25); }
+.t-chip-success { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.t-chip-warning { background: #fef3c7; color: #a16207; border-color: #fde68a; }
+.t-chip-danger  { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+.t-chip-muted   { background: var(--color-night-700); color: var(--color-bone-soft); border-color: #e1e7ef; }
+
+/* live status dot — Telegram blue pulse */
+@keyframes pulse-soft {
+    0%, 100% { opacity: 0.65; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.18); }
+}
+.dot-live {
+    width: 8px;
+    height: 8px;
+    background: var(--color-jade);
+    border-radius: 9999px;
+    animation: pulse-soft 2.4s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(49, 162, 76, 0.5);
+}
+
+/* subtle reveal — kept for legacy callers */
+@keyframes reveal {
+    from { transform: translateY(8px); filter: blur(2px); opacity: 0; }
+    to   { transform: translateY(0);   filter: blur(0);   opacity: 1; }
+}
+.reveal   { animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.12s; }
+.reveal-3 { animation-delay: 0.22s; }
+.reveal-4 { animation-delay: 0.32s; }
+.reveal-5 { animation-delay: 0.40s; }
+@media (prefers-reduced-motion: reduce) { .reveal { animation: none; } }
+
+/* ─────────── chat-native motion utilities ─────────── */
+
+/* Telegram-style wallpaper behind chat bubbles. Light, slightly textured. */
+.bg-tg-paper {
+    background:
+        radial-gradient(420px 320px at 20% 0%, rgba(34, 158, 217, 0.07), transparent 70%),
+        radial-gradient(380px 280px at 100% 100%, rgba(34, 158, 217, 0.05), transparent 70%),
+        var(--color-tg-paper);
+}
+
+/* Animated typing dots used inside ChatBubble shells */
+@keyframes typing-dot {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+    40%           { transform: translateY(-3px); opacity: 1; }
+}
+.typing-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    background: currentColor;
+    display: inline-block;
+    animation: typing-dot 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { .typing-dot { animation: none; opacity: 0.7; } }
+
+/* Typewriter caret used by <Typewriter> */
+@keyframes tw-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+.tw-cursor {
+    display: inline-block;
+    margin-inline-start: 0.05em;
+    color: var(--color-persimmon-deep);
+    font-weight: 700;
+    animation: tw-blink 0.9s steps(2) infinite;
+}
+@media (prefers-reduced-motion: reduce) { .tw-cursor { animation: none; } }
+
+/* Soft floating blob used as section background ornament */
+@keyframes blob-drift {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(2%, -3%, 0) scale(1.05); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.blob-drift { animation: blob-drift 14s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .blob-drift { animation: none; } }
+
+/* Glassy chip — Telegram-style pill over a wallpaper */
+.t-chip-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    border: 1px solid rgba(34, 158, 217, 0.18);
+    color: var(--color-persimmon-deep);
+}
+
+/* Sticker — small floating emoji-style badge */
+.t-sticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.55rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--color-night-600);
+    box-shadow: 0 6px 18px -10px rgba(15, 20, 25, 0.18);
+}
+
+/* Soft floating animation for hero stickers */
+@keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+.float-y { animation: float-y 4.5s ease-in-out infinite; }
+.float-y.delay-1 { animation-delay: 0.6s; }
+.float-y.delay-2 { animation-delay: 1.2s; }
+@media (prefers-reduced-motion: reduce) { .float-y { animation: none; } }
+
+/* Send button shimmer used on hero CTAs */
+@keyframes shimmer-x {
+    0%   { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+}
+.t-btn-primary { position: relative; overflow: hidden; }
+.t-btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    transform: translateX(-120%);
+    pointer-events: none;
+}
+.t-btn-primary:hover::after { animation: shimmer-x 1.1s ease forwards; }
+@media (prefers-reduced-motion: reduce) { .t-btn-primary::after { display: none; } }
+
+/* Slight lift on cards inside scroll containers */
+.t-card.lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.t-card.lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -22px rgba(15, 20, 25, 0.18);
+    border-color: rgba(34, 158, 217, 0.4);
+}
+
+/* Page wallpaper — subtle Telegram-blue speckle.  Cheap, GPU-friendly. */
+.tg-wallpaper {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(700px 500px at 90% -10%, rgba(34, 158, 217, 0.10), transparent 60%),
+        radial-gradient(600px 420px at -10% 110%, rgba(34, 158, 217, 0.07), transparent 60%),
+        radial-gradient(800px 560px at 50% 50%, rgba(34, 158, 217, 0.03), transparent 70%);
+}
+
+/* Marquee — used for testimonial / "live searches" ticker */
+@keyframes marquee-x {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.marquee {
+    display: flex;
+    width: max-content;
+    gap: 0.75rem;
+    animation: marquee-x 30s linear infinite;
+}
+.marquee-fast { animation-duration: 18s; }
+.marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+@media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
+
+/* Glow ring used around the demo card */
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.45; transform: scale(1); }
+    50%      { opacity: 0.85; transform: scale(1.04); }
+}
+.glow-pulse { animation: glow-pulse 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .glow-pulse { animation: none; opacity: 0.6; } }
+
+/* prose for blog/long-form (used in /terms, /privacy section bodies) */
+.prose-fa {
+    color: var(--color-bone-soft);
+    font-size: 1.0625rem;
+    line-height: 1.9;
+    max-width: 70ch;
+}
+.prose-fa h2  { color: var(--color-bone); font-weight: 800; font-size: 2rem; margin-top: 2.4em; margin-bottom: 0.5em; line-height: 1.3; }
+.prose-fa h3  { color: var(--color-bone); font-weight: 700; font-size: 1.4rem; margin-top: 1.8em; margin-bottom: 0.4em; }
+.prose-fa a   { color: var(--color-persimmon); text-decoration: underline; text-underline-offset: 3px; }
+.prose-fa a:hover { color: var(--color-persimmon-deep); }
+.prose-fa strong { color: var(--color-bone); font-weight: 600; }
+.prose-fa code   { background: var(--color-persimmon-soft); color: var(--color-persimmon-deep); padding: 0.1em 0.4em; border-radius: 6px; font-family: var(--font-mono); font-size: 0.9em; direction: ltr; unicode-bidi: isolate; }
+.prose-fa pre    { background: var(--color-night-700); border: 1px solid var(--color-rule); border-radius: 12px; padding: 1.1em; overflow-x: auto; font-family: var(--font-mono); font-size: 0.9em; line-height: 1.6; direction: ltr; }
+.prose-fa blockquote { border-inline-start: 3px solid var(--color-persimmon); padding-inline-start: 1.25em; color: var(--color-bone); font-size: 1.2rem; line-height: 1.5; }
+
+/* ─────────── CWV / performance hints ───────────
+   Applied opt-in via class (.cv-auto) to long, below-the-fold sections
+   so the browser skips rendering work until they approach the viewport. */
+.cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 800px;
+}
+
+/* Reduce metric-mismatch CLS when Vazirmatn swaps in over the fallback. */
+:root { font-size-adjust: 0.5; }
+
+/* Force GPU compositing on the animated backdrop blobs and the page-level
+   wallpaper so paint cost stays off the main thread.  translateZ(0) is
+   the cheapest "promote to layer" trick that works in every engine. */
+.blob-drift,
+.glow-pulse,
+.tg-wallpaper {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}

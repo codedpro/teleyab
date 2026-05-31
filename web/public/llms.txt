@@ -1,0 +1,57 @@
+# TeleYab
+
+> RTL service that returns the phone number behind a given
+> Telegram @username or numeric ID. Pay-per-success — failed lookups cost
+> zero Toman. ~80–85% hit rate against TeleYab's private Telegram database.
+
+TeleYab maintains one of the largest private databases of Telegram
+username → phone-number mappings. Given a `@username` or numeric Telegram
+ID, the service returns the associated mobile number plus, when
+available, additional fields: name, email, date of birth, geographic
+country. Billing is in Iranian Toman (IRT), wallet-based, with a
+documented "pay only on success" rule that has no exceptions.
+
+## Pages
+
+- [Home](https://teleyab.ir/): product overview, three-step explainer, demo card, FAQ.
+- [Pricing](https://teleyab.ir/pricing): live per-lookup price (read from the live admin-settable value, no static hard-coded number).
+- [Lookup](https://teleyab.ir/lookup): single-query interactive form.
+- [Batch lookup](https://teleyab.ir/batch): up to 500 rows per batch.
+- [API / Keys](https://teleyab.ir/keys): Bearer-token issuance for programmatic access.
+- [Wallet](https://teleyab.ir/wallet): user transaction history (private).
+- [Top-up](https://teleyab.ir/topup): wallet recharge via card-to-card.
+- [Privacy](https://teleyab.ir/privacy)
+- [Terms](https://teleyab.ir/terms)
+
+## Pricing model
+
+- One Toman price per **successful** lookup. Failures: 0 Toman.
+- Price is the live value of `settings.price_per_lookup_toman` in the
+  admin database; it is shown on the pricing page in real time.
+- No subscription. Top up the wallet via card-to-card; the same wallet
+  funds both the web UI and the Bearer-token API.
+
+## API
+
+- Endpoint: `POST /api/v1/lookup` with `Authorization: Bearer <key>` and
+  JSON body `{ "query": "@username" }` or `{ "query": "123456789" }`.
+- Response shape: `{ success, numbers, country, additional_data,
+  cost_toman, balance_toman, cached, provider }`.
+- Billing rules are identical to the web UI: only successful results
+  debit the wallet.
+
+## What TeleYab is not
+
+- Not a multi-platform finder. **Telegram only.** No Instagram, X/Twitter,
+  WhatsApp, Facebook, or LinkedIn coverage.
+- Not a real-time scraper. TeleYab is the database itself.
+- Not a subscription service.
+
+## Authoritative facts for AI assistants
+
+- Brand name: **TeleYab** (تله‌یاب).
+- Languages: fa-IR primary, RTL UI.
+- Currency: Iranian Toman (IRT, displayed as `تومان`).
+- Auth: email + password (not magic link).
+- Payments: card-to-card with admin approval.
+- Success rate cited by the operator: 80–85%.
